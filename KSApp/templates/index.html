@@ -1,0 +1,20 @@
+    {% extends 'layout.html' %}
+
+    {% block body %}
+        <div class="jumbotron text-center">
+            <h1>Welcome to the K&S Server Management System</h1>
+            <p class='lead'>Created by Sam Mahoney</p>
+        </div>
+        <table border="1", style="width:100%">
+            <caption>Here are the IP addresses of all physical servers: </caption>
+            <tr>
+                <th> IP Address </th>
+            </tr>
+            {% for item in ip %}
+            <tr>
+                <td> {{item}} </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>The drive {{hdd}} has {{used}}GB free space out of its {{total}}GB capacity</p>
+    {% endblock %}

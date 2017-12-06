@@ -1,0 +1,16 @@
+    {% extends 'layout.html' %}
+
+    {% block body %}
+        <table border="1", style="width:100%">
+            <caption>Server Information</caption>
+            <tr>
+                <th> IP Address </th>
+            </tr>
+            {% for item in ip %}
+            <tr>
+                <td> {{item}} </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p>The drive {{hdd}} has {{used}}GB free space out of its {{total}}GB capacity</p>
+    {% endblock %}
