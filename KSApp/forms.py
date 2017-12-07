@@ -10,7 +10,7 @@ class RegisterForm(Form):
     confirm = PasswordField('Confirm Password')
 
 
-class AddServerForm(Form):
+"""class AddServerForm(Form):
     servername = StringField('Server Name', [validators.input_required(), validators.length(min=4, max=50)])
     ipaddress = StringField('IP Address', [validators.input_required(), validators.length(min=9, max=50)])
     primaryrole = StringField('Primary Role', [validators.input_required(), validators.length(min=2, max=100)])
@@ -22,3 +22,4 @@ class AddServerForm(Form):
     cpu_model = StringField('CPU Model (use the exact model name)'), validators.input_required, validators.length(min=3,max=50)])
     ram_gb = IntegerField('Amount of RAM in GB', validators.input_required, validators.number_range(min=1,max=11)])
     vm = RadioField('Gender', choices = [(1,'is VM'),(0,'is not VM'), validators.required()])
+"""

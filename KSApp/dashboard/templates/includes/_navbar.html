@@ -11,18 +11,16 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/servers">Servers</a></li>
+            <li><a href="{{ url_for('homemenu.index') }}">Home</a></li>
+            <li><a href="{{ url_for('homemenu.servers') }}">Servers</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
             {% if session.logged_in %}
-              <li><a href="/admin"> Admin </a></li>
-              <li><a href="/logout">Logout</a></li>
+              <li><a href="{{ url_for('dashboard.admin') }}"> Admin </a></li>
+              <li><a href="{{ url_for('homemenu.logout') }}">Logout</a></li>
             {% else %}
-              <li><a href="/register">Register</a></li>
-              <li><a href="/login">Login</a></li>
+              <li><a href="{{ url_for('homemenu.index') }}">Login</a></li>
             {% endif %}
 
           </ul>

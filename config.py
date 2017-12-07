@@ -1,18 +1,12 @@
-import os
-basedir = os.path.abspath(os.path.dirname(__file__))
 
-#SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-#SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+SQLALCHEMY_DATABASE_URI = 'mysql://mahoney:Yb1dAI3vna3xTAMuJNOV@localhost:3306/ksdb2'
+WTF_CSRF_SECRET_KEY = 'random key for form'
+LDAP_PROVIDER_URL = 'ldap://ldap.testathon.net:389/'
+LDAP_PROTOCOL_VERSION = 3
 
+DEBUG = True
 CSRF_ENABLED = True
 WTF_CSRF_ENABLED = True
-SECRET_KEY = 'nufiuddfwhcbis'
-
-
-
-#MAIL_SERVER = 'localhost'
-#MAIL_PORT = 25
-#MAIL_USERNAME = None
-#MAIL_PASSWORD = None
+SECRET_KEY = 'Yb1dAI3vna3xTAMuJNOV'
 
 ADMINS = ['info@cmui.co.uk']
