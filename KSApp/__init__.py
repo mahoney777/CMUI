@@ -11,7 +11,7 @@ app.config.from_object('config')
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Root@localhost:3306/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mahoney:Yb1dAI3vna3xTAMuJNOV@localhost:3306/testdb'
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = 'Secret'
 bootstrap = Bootstrap(app)
@@ -21,7 +21,7 @@ login_manager.login_view = 'login'
 login_manager.login_message = 'Please Login'
 
 
-from .models import Users
+from .models import Users, Servers
 
 db.create_all()
 db.session.commit()

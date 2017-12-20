@@ -2,23 +2,33 @@ from KSApp import app,address,drive,freeSpace,totalSpace, login_manager, db
 from flask import render_template, flash, redirect, session, url_for, request, logging
 from flask_bootstrap import Bootstrap
 from functools import wraps
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, AddServerForm, ReusableForm
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from .models import Users
+from .models import Users, Servers
 
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
 @app.route('/')
+@app.route('/index')
 def homepage():
     return render_template('index.html', ip = address, hdd = drive, used = freeSpace, total = totalSpace)
 
 
-@app.route('/servers')
-def servers():
-    return render_template('servers.html')
+@app.route("/servers", methods=['GET', 'POST'])
+def hello():
+    form = ReusableForm(request.form)
+
+    if form.validate_on_submit(search):
+        search_string = search.data['search']
+
+        if search.data['search'] == '':
+            searchserver = Servers.query.filter_by(servername=form.searchServer.data).first()
+            ipadd = searchserver.ipaddress
+
+    return render_template('servers.html', form=form, ipa = ipadd)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -63,10 +73,23 @@ def logout():
 def admin():
     return render_template('admin.html')
 
-@app.route('/addserver')
+@app.route('/addserver', methods=['GET', 'POST'])
 @login_required
 def addserver():
-    return render_template('addserver.html')
+    form = AddServerForm()
+
+    if form.validate_on_submit():
+        new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
+                             primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
+                             operatingsystem=form.operatingsystem.data, commission=form.commission.data,
+                             make=form.make.data, num_cpu=form.num_cpu.data, cpu_model=form.cpu_model.data,
+                             ram_gb=form.ram_gb.data, vm=form.vm.data)
+
+        db.session.add(new_server)
+        db.session.commit()
+        return redirect(url_for('admin'))
+
+    return render_template('addserver.html', form = form)
 
 
 

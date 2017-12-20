@@ -1,8 +1,34 @@
-    {% extends 'layout.html' %}
+{% extends 'layout.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
     {% block body %}
         <div class="jumbotron text-center">
             <h1>Welcome to the addserver page</h1>
             <p class='lead'>WIP</p>
         </div>
+
+
+
+        <div class="container">
+
+      <form class="form-signin" method="POST" action="/addserver">
+        <h2 class="form-signin-heading">Add Server</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.servername) }}
+        {{ wtf.form_field(form.ipaddress) }}
+        {{ wtf.form_field(form.primaryrole) }}
+          {{ wtf.form_field(form.secondaryrole) }}
+          {{ wtf.form_field(form.operatingsystem) }}
+          {{ wtf.form_field(form.commission) }}
+          {{ wtf.form_field(form.make) }}
+          {{ wtf.form_field(form.num_cpu) }}
+          {{ wtf.form_field(form.cpu_model) }}
+          {{ wtf.form_field(form.ram_gb) }}
+          {{ wtf.form_field(form.vm) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Server</button>
+      </form>
+
+
+</div> <!-- /container -->
+        <h1>Please submit the form</h1>
     {% endblock %}

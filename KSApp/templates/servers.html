@@ -1,16 +1,17 @@
     {% extends 'layout.html' %}
 
     {% block body %}
-        <table border="1", style="width:100%">
-            <caption>Server Information</caption>
-            <tr>
-                <th> IP Address </th>
-            </tr>
-            {% for item in ip %}
-            <tr>
-                <td> {{item}} </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <p>The drive {{hdd}} has {{used}}GB free space out of its {{total}}GB capacity</p>
+
+        <h1>Search for a Server</h1>
+        <div class="container">
+
+      <form class="form-signin" method="POST" action="/servers">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.searchServer) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Servers Servers </button>
+      </form>
+
+</div> <!-- /container -->
+        <p>The IP address is {{ ipa }}</p>
     {% endblock %}

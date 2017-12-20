@@ -23,19 +23,42 @@ class Users(UserMixin, db.Model):
     def get_urole(self):
             return self.urole
 
-"""
+
 class Servers(db.Model):
     __tablename__ = 'Servers'
     id = db.Column(db.Integer, primary_key=True)
-    servername = db.Column(db.String(200), nullable=False)
+    servername = db.Column(db.String(200), nullable=False, unique=True)
     ipaddress = db.Column(db.String(80), nullable=False)
     primaryrole = db.Column(db.String(200), nullable=False)
     secondaryrole = db.Column(db.String(200), nullable=True)
     operatingsystem = db.Column(db.String(200), nullable=False)
-    commission = db.Column(db.String(100), nullable=True)
-    make = db.Column(db.String(200), nullable=True)
-    num_cpu = db.Column(db.Integer(10), nullable=False)
-    cpu_model = db.Column(db.String, nullable=False)
-    ram_gb = db.Column(db.Integer(10), nullable=False)
+    commission = db.Column(db.Date, nullable=True)
+    make = db.Column(db.String(100), nullable=True)
+    num_cpu = db.Column(db.Integer, nullable=False)
+    cpu_model = db.Column(db.String(80), nullable=False)
+    ram_gb = db.Column(db.Integer, nullable=False)
     vm = db.Column(db.Boolean, default=False)
-"""
+
+    def __init__(self,servername,ipaddress,primaryrole,secondaryrole,
+                 operatingsystem, commission, make, num_cpu, cpu_model, ram_gb, vm):
+
+            self.servername = servername
+            self.ipaddress = ipaddress
+            self.primaryrole = primaryrole
+            self.secondaryrole = secondaryrole
+            self.operatingsystem = operatingsystem
+            self.commission = commission
+            self.make = make
+            self.num_cpu = num_cpu
+            self.cpu_model = cpu_model
+            self.ram_gb = ram_gb
+            self.vm = vm
+
+    def get_id(self):
+            return self.id
+
+    def get_servername(self):
+            return self.servername
+
+    def get_ipaddress(self):
+        return self.ipaddress

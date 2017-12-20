@@ -6,13 +6,6 @@
             <p class='lead'>Created by Sam Mahoney</p>
         </div>
 
-        {% if current_user.is_authenticated() %}
-        <h3>Hey {{ current_user.username }}!!</h3>
-        <a href="{{ url_for('homemenu.logout') }}">Click here to logout</a>
-        {% else %}
-        Click here to <a href="{{ url_for('homemenu.login') }}">login with LDAP</a>
-        {% endif %}
-
         <table border="1", style="width:100%">
             <caption>Here are the IP addresses of all physical servers: </caption>
             <tr>
