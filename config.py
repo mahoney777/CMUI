@@ -1,3 +1,4 @@
+import os
 
 SQLALCHEMY_DATABASE_URI = 'mysql://mahoney:Yb1dAI3vna3xTAMuJNOV@localhost:3306/ksdb2'
 WTF_CSRF_SECRET_KEY = 'random key for form'

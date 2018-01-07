@@ -36,3 +36,12 @@ class AddServerForm(FlaskForm):
 class ReusableForm(FlaskForm):
     searchServer = StringField('Server:', validators=[InputRequired()])
 
+class IPAddressform(FlaskForm):
+    ipaddress = StringField("IP Address", validators=[])
+
+class add_domain_account(FlaskForm):
+    username = StringField('Domain Username', validators=[InputRequired(), Length(min=4, max=80)])
+    password = PasswordField('Domain password', validators=[InputRequired(), Length(min=8, max=80),
+                                                     EqualTo('confirm', message='Passwords do not match')])
+    confirm = PasswordField('Confirm Password')
+
