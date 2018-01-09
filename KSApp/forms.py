@@ -23,13 +23,8 @@ class AddServerForm(FlaskForm):
     ipaddress = StringField('IP Address', validators=[InputRequired(), Length(min=4, max=80)])
     primaryrole = StringField('Primary Role', validators=[InputRequired(), Length(min=1, max=200)])
     secondaryrole = StringField('Secondary Role', validators=[Length(min=1, max=200),Optional()])
-    operatingsystem = StringField('OS', validators=[InputRequired(), Length(min=1, max=200)])
     commission = DateField("Commission Date", format='%d/%m/%Y', validators=[Optional()])
     make = StringField('Make (HP)', validators=[InputRequired(), Length(min=1, max=100)])
-    num_cpu = IntegerField('Number of CPUs', validators=[InputRequired(), number_range(min=1, max=30)])
-    cpu_model = StringField('CPU Model (use the exact model name)', validators=[InputRequired(), Length(min=8, max=80)])
-    ram_gb = IntegerField('Amount of RAM in GB', validators=[InputRequired(), number_range(min=1, max=200)])
-    vm = BooleanField('VM')
 
 
 

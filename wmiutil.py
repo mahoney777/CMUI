@@ -94,6 +94,7 @@ class Connector():
 
     def sysinfo(self):
         #This uses the Win32 ComputerSystem Class
+        #This return the model name but calls a VM a VM instead of a model name
         vm = ([system.Model for system in c.Win32_ComputerSystem()][0])
         name = ([system.Name for system in c.Win32_ComputerSystem()][0])
         status = ([system.Status for system in c.Win32_ComputerSystem()][0])
@@ -103,16 +104,14 @@ class Connector():
 
 
 
-
-
 def servertest():
     p = Connector("192.168.31.2", "CMUIAdmin", "Admin2017")
-    """p.connect()
+    p.connect()
     p.diskspace()
     p.get_uptime()
     p.get_cpu()
     p.totaltestmem()
-    p.notinusemem()"""
+    p.notinusemem()
     p.sysinfo()
     p.get_cpu()
 

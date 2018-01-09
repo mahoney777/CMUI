@@ -5,7 +5,7 @@ from functools import wraps
 from KSApp.forms import RegisterForm, LoginForm, AddServerForm, ReusableForm, IPAddressform, add_domain_account
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from KSApp.models import Users, Servers, domainuser, serverinfo
+from KSApp.models import Users, Servers, serverinfo
 from sqlalchemy import text
 import wmi, os
 from wmiutil import Connector
@@ -103,11 +103,15 @@ def addserver():
     if form.validate_on_submit():
         new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
                              primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
-                             operatingsystem=form.operatingsystem.data, commission=form.commission.data,
-                             make=form.make.data, num_cpu=form.num_cpu.data, cpu_model=form.cpu_model.data,
-                             ram_gb=form.ram_gb.data, vm=form.vm.data)
+                             commission=form.commission.data, make=form.make.data)
 
         db.session.add(new_server)
+        x = os.environ.get("DOMAIN_USERNAME")
+        y = os.environ.get("DOMAIN_PWD")
+
+        serverinfo = Connector(form.ipaddress.data,x,y)
+
+
         db.session.commit()
         return redirect(url_for('admin'))
 

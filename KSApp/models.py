@@ -9,8 +9,6 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.String(200))
     email = db.Column(db.String(256),unique=True)
     urole = db.Column(db.String(80))
-    domainuser = relationship('domainuser', uselist=False, back_populates="users")
-
 
 
     def __init__(self,username,password,email,urole):
@@ -28,39 +26,22 @@ class Users(UserMixin, db.Model):
             return self.urole
 
 
-class domainuser(db.Model):
-    __tablename__ = 'domainuser'
-    id = db.Column(db.Integer, primary_key=True)
-    domainusername = db.Column(db.String(200))
-    domainpassword = db.Column(db.String(200))
-    users_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
-    users = relationship("Users", back_populates="domainuser")
-
-    def __int__(self,id,domainusername, domainpassword):
-        self.id = id
-        self.domainusername = domainuser
-        self.domainpassword = domainpassword
-
-    def get_id(self):
-        return self.id
 
 
 
 class Servers(db.Model):
-    __tablename__ = 'Servers'
+    __tablename__ = 'servers'
     id = db.Column(db.Integer, primary_key=True)
-    info_id = db.Column(db.Integer, db.ForeignKey(''))
     servername = db.Column(db.String(200), nullable=False, unique=True)
     ipaddress = db.Column(db.String(80), nullable=False)
     primaryrole = db.Column(db.String(200), nullable=False)
     secondaryrole = db.Column(db.String(200), nullable=True)
     commission = db.Column(db.Date, nullable=True)
     make = db.Column(db.String(100), nullable=True)
+    serverinfo = relationship("serverinfo", uselist=False, backref="servers")
 
-    def __init__(self,id,servername,ipaddress,primaryrole,secondaryrole, commission, make):
+    def __init__(self, servername, ipaddress, primaryrole, secondaryrole, commission, make):
 
-            self.id = db.Column(db.Integer, primary_key=True)
-            #self.
             self.servername = servername
             self.ipaddress = ipaddress
             self.primaryrole = primaryrole
@@ -81,6 +62,7 @@ class Servers(db.Model):
 class serverinfo(db.Model):
     __tablename__ = 'serverinfo'
     id = db.Column(db.Integer, primary_key=True)
+    servers_id = db.Column(db.Integer, db.ForeignKey("servers.id"))
     operatingsystem = db.Column(db.String(200), nullable=True)
     #need to change this if there is more than one drive in the server
     drivemapping = db.Column(db.String(200), nullable=True)
@@ -92,10 +74,9 @@ class serverinfo(db.Model):
     ramnotinuse = db.Column(db.Integer, nullable=True)
 
 
-    def __init__(self, id, operatingsystem, drivemapping, drivefreespace,
+    def __init__(self, operatingsystem, drivemapping, drivefreespace,
                  drivetotalspace, cpuload, ramuseage, totalram, ramnotinuse):
 
-        self.id = id
         self.operatingsystem = operatingsystem
         self.drivemapping = drivemapping
         self.drivefreespace = drivefreespace
