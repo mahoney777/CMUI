@@ -60,7 +60,7 @@ class Servers(db.Model):
     def __init__(self,id,servername,ipaddress,primaryrole,secondaryrole, commission, make):
 
             self.id = db.Column(db.Integer, primary_key=True)
-            self.
+            #self.
             self.servername = servername
             self.ipaddress = ipaddress
             self.primaryrole = primaryrole
