@@ -12,11 +12,6 @@ from wmiutil import Connector
 import threading
 
 
-print("TEST")
-i = Connector(None,None,None)
-i.connect()
-
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -124,33 +119,33 @@ def addserver():
 @app.route('/stats', methods=['GET','POST'])
 @login_required
 def stats():
-    data=''
     form = IPAddressform()
-    print(current_user)
-    domainusername = db.engine.execute(text("""SELECT domainuser.domainusername AS Users FROM 
-                                            domainuser INNER JOIN Users ON Users.id = domainuser.id 
-                                            WHERE domainuser.id = 1"""))
-    stuff = []
-    for row in domainusername:
-        print(row)
-        stuff = row
-        thedata = stuff
-        print(thedata)
-        info = thedata[0].split()
-        duser = info[0]
-        dpwd = DOMAIN_USER_PWD
-        print(dpwd)
-
+    x = os.environ.get("DOMAIN_USERNAME")
+    y = os.environ.get("DOMAIN_PWD")
 
     if form.validate_on_submit():
         ip = form.ipaddress.data
-        ipsearch = Connector(ip,duser,dpwd)
-        data = ipsearch.connect()
-        print(data)
+        ipsearch = Connector(ip,x,y)
+        operatingsystem = ipsearch.connect()
+        diskspace = ipsearch.diskspace()
+        map = diskspace[0]
+        free = diskspace[1]
+        total = diskspace[2]
+        uptime = ipsearch.get_uptime()
+        cpuload = ipsearch.get_cpu()
+        memory = ipsearch.totaltestmem()
+        memorynotinuse = ipsearch.notinusemem()
+        system = ipsearch.sysinfo()
+        vm = system[0]
+        name = system[1]
+        status = system[2]
 
+        return render_template('stats.html', form=form, os=operatingsystem, map = map,
+                               free=free, total=total, uptime=uptime, cpu=cpuload,
+                               mem=memory, notinuse=memorynotinuse, vm=vm, name=name,
+                               status= status)
 
-
-    return render_template('stats.html', form = form, data=data)
+    return render_template('stats.html', form = form)
 
 
 
@@ -160,11 +155,12 @@ def domainaccount():
     form = add_domain_account()
 
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_domain_user = domainuser(domainusername=form.username.data, domainpassword=hashed_password)
-        db.session.add(new_domain_user)
-        db.session.commit()
+        os.environ["DOMAIN_USERNAME"] = form.username.data
+        #could make hashing/encryting/decryt this
+        os.environ["DOMAIN_PWD"] = form.password.data
         #export password to env variable
+        print(os.environ.get('DOMAIN_USERNAME'))
+        print(os.environ.get('DOMAIN_PWD'))
     return render_template('domainaccount.html', form = form)
 
 

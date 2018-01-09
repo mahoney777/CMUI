@@ -7,6 +7,16 @@
             <p class='lead'>WIP</p>
         </div>
 
+./this doesnt work
+        <div class="container">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
 
 
         <div class="container">
@@ -15,11 +25,52 @@
         <h2 class="form-signin-heading">Server Stats</h2>
         {{ form.hidden_tag() }}
         {{ wtf.form_field(form.ipaddress) }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Stats</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Get Live Server Stats</button>
       </form>
+
+        <script>
+
+        $("button").click(function() {
+            var $btn = $(this);
+            $btn.button('loading');
+            setTimeout(function () {
+                $btn.button('reset');
+            }, 8000);
+        });
+
+        </script>
+
+
+
+
 
 
 </div> <!-- /container -->
-        <h1> {{ data }}</h1>
+       <table border = 1>
+         {% if form.validate_on_submit() %}
+
+            <dl class="dl-horizontal">
+            <dt>Operating System</dt>
+            <dd> {{ os }} </dd>
+            <dt>Disk Space</dt>
+            <dd> {{ map }} has {{ free }} GB of {{ total }}GB of free space</dd>
+            <dt>Up time</dt>
+            <dd> {{ uptime }} Days</dd>
+            <dt>CPU</dt>
+            <dd>The CPU load is {{ cpu }} %</dd>
+            <dt>Total Mem</dt>
+            <dd>This server has {{ mem }} GB of RAM </dd>
+            <dt>Mem</dt>
+            <dd>{{ notinuse }} GB of RAM is not in use</dd>
+            <dt>VM</dt>
+            <dd> {{ vm }} </dd>
+            <dt>Name</dt>
+            <dd> {{ name }} </dd>
+            <dt>Status</dt>
+            <dd> {{ status }} </dd>
+            </dl>
+
+         {% endif %}
+      </table>
         <h1>Please submit the form</h1>
     {% endblock %}

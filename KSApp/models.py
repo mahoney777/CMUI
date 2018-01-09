@@ -49,32 +49,24 @@ class domainuser(db.Model):
 class Servers(db.Model):
     __tablename__ = 'Servers'
     id = db.Column(db.Integer, primary_key=True)
+    info_id = db.Column(db.Integer, db.ForeignKey(''))
     servername = db.Column(db.String(200), nullable=False, unique=True)
     ipaddress = db.Column(db.String(80), nullable=False)
     primaryrole = db.Column(db.String(200), nullable=False)
     secondaryrole = db.Column(db.String(200), nullable=True)
-    operatingsystem = db.Column(db.String(200), nullable=False)
     commission = db.Column(db.Date, nullable=True)
     make = db.Column(db.String(100), nullable=True)
-    num_cpu = db.Column(db.Integer, nullable=False)
-    cpu_model = db.Column(db.String(80), nullable=False)
-    ram_gb = db.Column(db.Integer, nullable=False)
-    vm = db.Column(db.Boolean, default=False)
 
-    def __init__(self,servername,ipaddress,primaryrole,secondaryrole,
-                 operatingsystem, commission, make, num_cpu, cpu_model, ram_gb, vm):
+    def __init__(self,id,servername,ipaddress,primaryrole,secondaryrole, commission, make):
 
+            self.id = db.Column(db.Integer, primary_key=True)
+            self.
             self.servername = servername
             self.ipaddress = ipaddress
             self.primaryrole = primaryrole
             self.secondaryrole = secondaryrole
-            self.operatingsystem = operatingsystem
             self.commission = commission
             self.make = make
-            self.num_cpu = num_cpu
-            self.cpu_model = cpu_model
-            self.ram_gb = ram_gb
-            self.vm = vm
 
     def get_id(self):
             return self.id

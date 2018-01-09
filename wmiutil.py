@@ -13,13 +13,12 @@ class Connector():
         pythoncom.CoInitialize()
         #Use ip,username,password to connect to server
         global c
-        #c = wmi.WMI()
-        c = wmi.WMI(ip, user=username, password=password)
+        c = wmi.WMI()
+        #c = wmi.WMI(ip, user=username, password=password)
 
     def connect(self):
         try:
             #print("Establishing connection to %s" % ip)
-            #c = wmi.WMI(ip, user=username, password=password)
             for os in c.Win32_OperatingSystem():
                 print(os.Caption)
                 return os.Caption
@@ -46,12 +45,18 @@ class Connector():
         uptime = int([uptime.SystemUpTime for uptime in c.Win32_PerfFormattedData_PerfOS_System()][0])
         uptimehours = uptime / 3600
         uptimedays = uptimehours / 24
+        uptimedays = round(uptimedays, 2)
         print("The Server has been up for %d days" % (uptimedays))
+        return uptimedays
 
     def get_cpu(self):
         cpuload = [cpu.LoadPercentage for cpu in c.Win32_Processor()]
         avgcpuload = int(sum(cpuload) / len(cpuload))  # avg all cores/processors! Change to per core?
         print("The CPU load is %d percent" % (avgcpuload))
+        numofcores = ([cpu.NumberOfLogicalProcessors for cpu in c.Win32_ComputerSystem()][0])
+        numofcpu = ([cpu.NumberOfProcessors for cpu in c.Win32_ComputerSystem()][0])
+        cpu_name = ([cpu.Name for cpu in c.Win32_Processor()][0])
+        return avgcpuload, numofcores, numofcpu, cpu_name
 
 
     def get_mem_mbytes(self):
@@ -73,6 +78,7 @@ class Connector():
         totalmem = round(a, 2)
         #This is my own code that returns the RAM. 7.9 on laptop is correct
         print("This server has %d GB of total RAM" % (totalmem))
+        return totalmem
 
     def notinusemem(self):
         numem = ([mem.FreePhysicalMemory for mem in c.Win32_OperatingSystem()][0])
@@ -80,39 +86,35 @@ class Connector():
         a = int(a) / 2 ** 20
         notinuse = round(a, 2)
         print("%d GB of RAM is not in use" % (notinuse))
+        return notinuse
+
+
+
+
 
     def sysinfo(self):
-        systeminfo = ([nic.IPXAddress for nic in c.Win32_NetworkAdapterConfiguration()][0])
-        print(systeminfo)
-        #trying to get IP
-        #Not working
-        #Maybe get all info from WMI and add to db? User enters ip and the script collects the info
+        #This uses the Win32 ComputerSystem Class
+        vm = ([system.Model for system in c.Win32_ComputerSystem()][0])
+        name = ([system.Name for system in c.Win32_ComputerSystem()][0])
+        status = ([system.Status for system in c.Win32_ComputerSystem()][0])
+        return vm, name, status
+
+
+
+
 
 
 
 def servertest():
     p = Connector("192.168.31.2", "CMUIAdmin", "Admin2017")
-    p.connect()
+    """p.connect()
     p.diskspace()
     p.get_uptime()
     p.get_cpu()
-    p.get_mem_mbytes()
-    p.get_mem_pct()
     p.totaltestmem()
-    p.notinusemem()
-
-
-"""
-def testing():
-    p = Connector(None,None,None) #None is temp while not connected to windows server change at home
-    p.connect()
-    p.diskspace()
-    p.get_uptime()
-    p.get_cpu()
-    p.get_mem_mbytes()
-    p.get_mem_pct()
-    p.totaltestmem()
-    p.notinusemem()
-
+    p.notinusemem()"""
     p.sysinfo()
-"""
+    p.get_cpu()
+
+
+
