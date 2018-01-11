@@ -5,7 +5,7 @@ from functools import wraps
 from KSApp.forms import RegisterForm, LoginForm, AddServerForm, ReusableForm, IPAddressform, add_domain_account
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-from KSApp.models import Users, Servers, serverinfo
+from KSApp.models import Users, Servers, serverinfo, serverdrives
 from sqlalchemy import text
 import wmi, os
 from wmiutil import Connector
@@ -20,7 +20,7 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/index')
 def homepage():
-    return render_template('index.html', ip = "1", hdd = "2", used = "3", total = "4")#need to fix with wmi support
+    return render_template('index.html')#need to fix with wmi support
 
 
 @app.route("/servers", methods=['GET', 'POST'])
@@ -101,17 +101,21 @@ def addserver():
     form = AddServerForm()
 
     if form.validate_on_submit():
-        new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
-                             primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
-                             commission=form.commission.data, make=form.make.data)
-
-        db.session.add(new_server)
         x = os.environ.get("DOMAIN_USERNAME")
         y = os.environ.get("DOMAIN_PWD")
 
-        serverinfo = Connector(form.ipaddress.data,x,y)
+        serverinfo = Connector(form.ipaddress.data, x, y)
 
+        serverinfo.allstats()
 
+        new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
+                             primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
+                             commission=form.commission.data, make=form.make.data)
+        newserverinfo = serverinfo(operatingsystem=os, cpuload=cpuload, ramuseage=ramuseage, totalram=totalram,
+                                   status=status, cpuname=cpuname, numofcores=numofcores, numofcpu=numofcpu)
+        newserverdrives = serverdrives()
+
+        db.session.add(new_server)
         db.session.commit()
         return redirect(url_for('admin'))
 
@@ -120,7 +124,7 @@ def addserver():
     return render_template('addserver.html', form = form)
 
 
-@app.route('/stats', methods=['GET','POST'])
+@app.route('/stats', methods=['GET', 'POST'])
 @login_required
 def stats():
     form = IPAddressform()

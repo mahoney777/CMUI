@@ -39,6 +39,7 @@ class Servers(db.Model):
     commission = db.Column(db.Date, nullable=True)
     make = db.Column(db.String(100), nullable=True)
     serverinfo = relationship("serverinfo", uselist=False, backref="servers")
+    serverdrives = relationship("serverdrives", uselist=False, backref="servers")
 
     def __init__(self, servername, ipaddress, primaryrole, secondaryrole, commission, make):
 
@@ -64,18 +65,17 @@ class serverinfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     servers_id = db.Column(db.Integer, db.ForeignKey("servers.id"))
     operatingsystem = db.Column(db.String(200), nullable=True)
-    #need to change this if there is more than one drive in the server
-    drivemapping = db.Column(db.String(200), nullable=True)
-    drivefreespace = db.Column(db.Integer, nullable=True)
-    drivetotalspace = db.Column(db.Integer, nullable=True)
     cpuload = db.Column(db.Integer, nullable=True)
-    ramuseage = db.Column(db.Integer, nullable=True)
     totalram = db.Column(db.Integer, nullable=True)
     ramnotinuse = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.String(10))
+    cpuname = db.Column(db.String(200))
+    numofcores = db.Column(db.Integer)
+    numofcpu = db.Column(db.Integer)
 
 
     def __init__(self, operatingsystem, drivemapping, drivefreespace,
-                 drivetotalspace, cpuload, ramuseage, totalram, ramnotinuse):
+                 drivetotalspace, cpuload, ramuseage, totalram, ramnotinuse, status, cpuname, numofcores, numofcpu):
 
         self.operatingsystem = operatingsystem
         self.drivemapping = drivemapping
@@ -85,11 +85,23 @@ class serverinfo(db.Model):
         self.ramuseage = ramuseage
         self.totalram = totalram
         self.ramuseage = ramnotinuse
+        self.status = status
+        self.cpuname = cpuname
+        self.numofcores = numofcores
+        self.numofcpu = numofcpu
 
     def get_id(self):
         return self.id
 
 
+
+class serverdrives(db.Model):
+    __tablename__ = "serverdrives"
+    id = db.Column(db.Integer, primary_key=True)
+    servers_id = db.Column(db.Integer, db.ForeignKey("servers.id"))
+    drivemapping = db.Column(db.String(200), nullable=True)
+    drivefreespace = db.Column(db.Integer, nullable=True)
+    drivetotalspace = db.Column(db.Integer, nullable=True)
 
 
 

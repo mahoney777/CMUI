@@ -31,11 +31,9 @@ class Connector():
     def diskspace(self):
         for d in c.Win32_LogicalDisk():
             a = d.FreeSpace
-            a = int(a) / 2 ** 30
-            freespace = round(a, 2)
+            freespace = round((int(a) / 2 ** 30), 2)
             b = d.Size
-            b = int(b) / 2 ** 30
-            totalspace = round(b, 2)
+            totalspace = round((int(b) / 2 ** 30), 2)
             drive = d.Caption
             print("The drive %s has %s GB free space out of its %s GB capacity" % (drive, freespace, totalspace))
             return drive, freespace, totalspace
@@ -43,9 +41,7 @@ class Connector():
 
     def get_uptime(self):
         uptime = int([uptime.SystemUpTime for uptime in c.Win32_PerfFormattedData_PerfOS_System()][0])
-        uptimehours = uptime / 3600
-        uptimedays = uptimehours / 24
-        uptimedays = round(uptimedays, 2)
+        uptimedays = round(((uptime / 3600) / 24), 2)
         print("The Server has been up for %d days" % (uptimedays))
         return uptimedays
 
@@ -59,23 +55,10 @@ class Connector():
         return avgcpuload, numofcores, numofcpu, cpu_name
 
 
-    def get_mem_mbytes(self):
-        available_mbytes = int([mem.AvailableMBytes for mem in c.Win32_PerfFormattedData_PerfOS_Memory()][0])
-        print("------------------------")
-        print("Change to GB")
-        print("The available RAM remaining in mbytes is %d" % (available_mbytes)) #Change to GB and add max mem and % useage?
-        print("notinusemem already does this with my own code")
-        print("------------------------")
-
-    def get_mem_pct(self):
-        pct_in_use = int([mem.PercentCommittedBytesInUse for mem in c.Win32_PerfFormattedData_PerfOS_Memory()][0])
-        print("%d percent of RAM has been used" % (pct_in_use))
-
     def totaltestmem(self):
         memt = ([mem.TotalVisibleMemorySize for mem in c.Win32_OperatingSystem()][0])
         a = memt
-        a = int(a) / 2 ** 20
-        totalmem = round(a, 2)
+        totalmem = round((int(a) / 2 ** 20), 2)
         #This is my own code that returns the RAM. 7.9 on laptop is correct
         print("This server has %d GB of total RAM" % (totalmem))
         return totalmem
@@ -83,8 +66,7 @@ class Connector():
     def notinusemem(self):
         numem = ([mem.FreePhysicalMemory for mem in c.Win32_OperatingSystem()][0])
         a = numem
-        a = int(a) / 2 ** 20
-        notinuse = round(a, 2)
+        notinuse = round((int(a) / 2 ** 20), 2)
         print("%d GB of RAM is not in use" % (notinuse))
         return notinuse
 
@@ -101,11 +83,47 @@ class Connector():
         return vm, name, status
 
 
+    def allstats(self):
+        #Computer info
+        vm = ([system.Model for system in c.Win32_ComputerSystem()][0])
+        ####need to change this
+        name = ([system.Name for system in c.Win32_ComputerSystem()][0])
+        status = ([system.Status for system in c.Win32_ComputerSystem()][0])
+        os = ([system.Caption for system in c.Win32_OperatingSystem()][0])
+        #mem stats
+        notinuse = round((int(([mem.FreePhysicalMemory for mem in c.Win32_OperatingSystem()][0])) / 2 ** 20), 2)
+        totalmem = round((int(([mem.TotalVisibleMemorySize for mem in c.Win32_OperatingSystem()][0])) / 2 ** 20), 2)
+        #cpu stats
+        numofcores = ([cpu.NumberOfLogicalProcessors for cpu in c.Win32_ComputerSystem()][0])
+        numofcpu = ([cpu.NumberOfProcessors for cpu in c.Win32_ComputerSystem()][0])
+        cpu_name = ([cpu.Name for cpu in c.Win32_Processor()][0])
+        avgcpuload = int(sum([cpu.LoadPercentage for cpu in c.Win32_Processor()]) /
+                         len([cpu.LoadPercentage for cpu in c.Win32_Processor()]))  # avg all cores/processors! Change to per core?
+        #other stats
+        uptime = round(((int([uptime.SystemUpTime for uptime in
+                              c.Win32_PerfFormattedData_PerfOS_System()][0])) / 3600 / 24), 2)
+
+
+        for drive in c.Win32_LogicalDisk():
+            try:
+                name = drive.caption
+                totalspace = round((int(drive.Size) / 2 ** 30), 2)
+                freespace = round((int(drive.FreeSpace) / 2 ** 30), 2)
+                print(name, totalspace, freespace)
+                #add to database
+            except TypeError:
+                pass
+
+
+
+
+
 
 
 
 def servertest():
     p = Connector("192.168.31.2", "CMUIAdmin", "Admin2017")
+    """
     p.connect()
     p.diskspace()
     p.get_uptime()
@@ -113,7 +131,8 @@ def servertest():
     p.totaltestmem()
     p.notinusemem()
     p.sysinfo()
-    p.get_cpu()
+    p.get_cpu()"""
+    p.allstats()
 
 
-
+servertest()
