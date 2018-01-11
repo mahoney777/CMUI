@@ -84,6 +84,7 @@ class Connector():
 
 
     def allstats(self):
+        drivelist = []
         #Computer info
         vm = ([system.Model for system in c.Win32_ComputerSystem()][0])
         ####need to change this
@@ -106,14 +107,16 @@ class Connector():
 
         for drive in c.Win32_LogicalDisk():
             try:
-                name = drive.caption
+                drivename = drive.caption
                 totalspace = round((int(drive.Size) / 2 ** 30), 2)
                 freespace = round((int(drive.FreeSpace) / 2 ** 30), 2)
-                print(name, totalspace, freespace)
-                #add to database
+                singledrive = drivename, totalspace, freespace
+                drivelist.append(singledrive)
+
             except TypeError:
                 pass
 
+        return vm, name, status, os, notinuse, totalmem, numofcores, numofcpu, cpu_name, avgcpuload, uptime, drivelist
 
 
 
@@ -133,6 +136,3 @@ def servertest():
     p.sysinfo()
     p.get_cpu()"""
     p.allstats()
-
-
-servertest()

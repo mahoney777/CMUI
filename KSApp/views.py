@@ -103,17 +103,32 @@ def addserver():
     if form.validate_on_submit():
         x = os.environ.get("DOMAIN_USERNAME")
         y = os.environ.get("DOMAIN_PWD")
+        print(x,y)
+        z = form.ipaddress.data
 
-        serverinfo = Connector(form.ipaddress.data, x, y)
+        serverinfo = Connector(z, x, y)
 
-        serverinfo.allstats()
+        #get varibles
+        allstats = serverinfo.allstats()
+        vm, name, status, operatingsystem, notinuse, totalmem, \
+        numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = allstats
+        print(vm, name, status, numofcpu, numofcores)
 
         new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
                              primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
                              commission=form.commission.data, make=form.make.data)
-        newserverinfo = serverinfo(operatingsystem=os, cpuload=cpuload, ramuseage=ramuseage, totalram=totalram,
+
+        newserverinfo = serverinfo(operatingsystem=operatingsystem, cpuload=avgcpuload, ramuseage=notinuse, totalram=totalmem,
                                    status=status, cpuname=cpuname, numofcores=numofcores, numofcpu=numofcpu)
-        newserverdrives = serverdrives()
+
+        mapping = (x[0] for x in drivelist)
+        totalspace = (x[1] for x in drivelist)
+        freespace = (x[2] for x in drivelist)
+
+        print(mapping, totalspace, freespace)
+        for element in mapping, freespace, totalspace:
+            newserverdrives = serverdrives(drivemapping=mapping[element], drivefreespace = freespace[element],
+                                           drivetotalspace = totalspace[element])
 
         db.session.add(new_server)
         db.session.commit()
