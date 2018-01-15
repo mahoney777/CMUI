@@ -68,23 +68,20 @@ class serverinfo(db.Model):
     cpuload = db.Column(db.Integer, nullable=True)
     totalram = db.Column(db.Integer, nullable=True)
     ramnotinuse = db.Column(db.Integer, nullable=True)
-    status = db.Column(db.String(10))
+    status = db.Column
     cpuname = db.Column(db.String(200))
     numofcores = db.Column(db.Integer)
     numofcpu = db.Column(db.Integer)
 
 
-    def __init__(self, operatingsystem, drivemapping, drivefreespace,
-                 drivetotalspace, cpuload, ramuseage, totalram, ramnotinuse, status, cpuname, numofcores, numofcpu):
+    def __init__(self, servers_id, operatingsystem, cpuload, ramnotinuse,
+                 totalram, status, cpuname, numofcores, numofcpu):
 
+        self.servers_id = servers_id
         self.operatingsystem = operatingsystem
-        self.drivemapping = drivemapping
-        self.drivefreespace = drivefreespace
-        self.drivetotalspace = drivetotalspace
         self.cpuload = cpuload
-        self.ramuseage = ramuseage
+        self.ramnotinuse = ramnotinuse
         self.totalram = totalram
-        self.ramuseage = ramnotinuse
         self.status = status
         self.cpuname = cpuname
         self.numofcores = numofcores
@@ -102,6 +99,14 @@ class serverdrives(db.Model):
     drivemapping = db.Column(db.String(200), nullable=True)
     drivefreespace = db.Column(db.Integer, nullable=True)
     drivetotalspace = db.Column(db.Integer, nullable=True)
+
+
+    def __int__(self, servers_id, drivemapping, drivefreespace, drivetotalspace):
+
+        self.servers_id = servers_id
+        self.drivemapping = drivemapping
+        self.drivefreespace = drivefreespace
+        self.drivetotalspace = drivetotalspace
 
 
 

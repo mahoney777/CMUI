@@ -12,6 +12,10 @@ from wmiutil import Connector
 import threading
 
 
+def reloadserverstats():
+    #reload the stats
+    pass
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -25,31 +29,40 @@ def homepage():
 
 @app.route("/servers", methods=['GET', 'POST'])
 def servers():
-    #This is needed to get wmi to work
-    form = ReusableForm()
-    servernames = form.searchServer.data
-    sdataname = ""
-    osname = ""
-    #this checks it exists
-    #exists = db.session.query(db.exists().where(Servers.servername == servernames)).scalar()
-    #print(exists)
-    print(servernames)
-    print("Test")
-    #Trying to get SQLALC to search for the server in the webpage and print result....
-    if servernames != None:
-        #Getting WMI info
-        p = Connector(None,None,None) #Change this to use the server info from the form
-        osname = p.connect()
-        stest = db.engine.execute(text("SELECT * FROM SERVERS WHERE servername = :servernames"), servernames=servernames)
-        servern = []
-        for row in stest:
+    basicserverinfo = []
+    ids = []
+    info = []
+    drives = []
+    for row in db.engine.execute(text("SELECT * FROM SERVERS")):
+        basicserverinfo.append(row)
+        ids.append(row[0])
+    print(basicserverinfo)
+    for i in ids:
+        serverid = i
+        for row in db.engine.execute(text("SELECT * FROM serverinfo WHERE servers_id = :serverid"), serverid=serverid):
+            info.append(row)
             print(row)
-            servern=row
-            sdataname = servern
+        print(info)
+        print("""
+        
+        
+        
+        
+        
+        """)
+
+    for row in db.engine.execute(text("SELECT * FROM SERVERDRIVES WHERE servers_id = :serverid"), serverid=serverid):
+        drives.append(row)
+    print(drives)
 
 
-    return render_template('servers.html', form = form, sdataname = sdataname, osname = osname)
+    #####################################
+    """I need to create a system where
+    data from the database can be passed
+    as different servers-stuff in testfile"""
+    #####################################
 
+    return render_template('servers.html', basicserverinfo=basicserverinfo)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -103,35 +116,51 @@ def addserver():
     if form.validate_on_submit():
         x = os.environ.get("DOMAIN_USERNAME")
         y = os.environ.get("DOMAIN_PWD")
-        print(x,y)
+        print(x, y)
         z = form.ipaddress.data
 
-        serverinfo = Connector(z, x, y)
+        server_info = Connector(z, x, y)
 
         #get varibles
-        allstats = serverinfo.allstats()
+        #
+        # allstats = server_info.allstats()
+        #
         vm, name, status, operatingsystem, notinuse, totalmem, \
-        numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = allstats
-        print(vm, name, status, numofcpu, numofcores)
+        numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = server_info.allstats()
+        print(vm, name, status, numofcpu, numofcores, "How")
 
         new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
                              primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
                              commission=form.commission.data, make=form.make.data)
 
-        newserverinfo = serverinfo(operatingsystem=operatingsystem, cpuload=avgcpuload, ramuseage=notinuse, totalram=totalmem,
-                                   status=status, cpuname=cpuname, numofcores=numofcores, numofcpu=numofcpu)
-
-        mapping = (x[0] for x in drivelist)
-        totalspace = (x[1] for x in drivelist)
-        freespace = (x[2] for x in drivelist)
-
-        print(mapping, totalspace, freespace)
-        for element in mapping, freespace, totalspace:
-            newserverdrives = serverdrives(drivemapping=mapping[element], drivefreespace = freespace[element],
-                                           drivetotalspace = totalspace[element])
-
         db.session.add(new_server)
         db.session.commit()
+
+        ipadd = db.engine.execute(text("SELECT id FROM SERVERS WHERE ipaddress = :IPA"), IPA=form.ipaddress.data)
+        for row in ipadd:
+            print(row)
+            serverid = row[0]
+            print(serverid)
+
+        new_serverinfo = serverinfo(servers_id = serverid, operatingsystem=operatingsystem, cpuload=avgcpuload,
+                                    ramnotinuse=notinuse, totalram=totalmem, status=status,
+                                    cpuname=cpuname, numofcores=numofcores, numofcpu=numofcpu)
+
+        db.session.add(new_serverinfo)
+        db.session.commit()
+
+        drivelistlen = len(drivelist)
+
+        for i in range(drivelistlen):
+            mapping, freespace, totalspace = drivelist[i]
+            print(mapping, freespace, totalspace)
+
+            new_serverdrives = serverdrives(servers_id = serverid, drivemapping=mapping, drivefreespace = freespace,
+                                           drivetotalspace = totalspace)
+
+            db.session.add(new_serverdrives)
+            db.session.commit()
+
         return redirect(url_for('admin'))
 
 

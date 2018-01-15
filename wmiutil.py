@@ -13,8 +13,8 @@ class Connector():
         pythoncom.CoInitialize()
         #Use ip,username,password to connect to server
         global c
-        c = wmi.WMI()
-        #c = wmi.WMI(ip, user=username, password=password)
+        #c = wmi.WMI()
+        c = wmi.WMI(ip, user=username, password=password)
 
     def connect(self):
         try:

@@ -2,18 +2,34 @@
     {% import "bootstrap/wtf.html" as wtf %}
 
     {% block body %}
+        <h>Dashboard</h>
+        {% for i in basicserverinfo %}
+    <h>{{ i[1] }}</h>
+        <table border = 1>
+            <dl class="dl-horizontal">
+            <dt>Server ID</dt>
+            <dd> {{ i[0] }}</dd>
+            <dt>Server Name</dt>
+            <dd> {{ i[1] }}</dd>
+            <dt>ip Address</dt>
+            <dd> {{ i[2] }}</dd>
+            <dt>Primary Role</dt>
+            <dd> {{ i[3] }}</dd>
+            <dt>Secondary Role</dt>
+            <dd> {{ i[4] }}</dd>
+            <dt>Commission</dt>
+            <dd> {{ i[5] }}</dd>
+            <dt>Make</dt>
+            <dd> {{ i[6] }}</dd>
+            <dt>Make</dt>
+            <dd> {{ i[15] }}</dd>
+            <dt>Make</dt>
+            <dd> {{ i[16] }}</dd>
+            <dt>Make</dt>
+            <dd> {{ i[17] }}</dd>
+            </dl>
 
-        <h1>Search for a Server</h1>
-        <div class="container">
+         {% endfor %}
+      </table>
 
-      <form class="form-signin" method="POST" action="/servers">
-        <h2 class="form-signin-heading">Enter Server name</h2>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.searchServer) }}
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Servers Servers </button>
-      </form>
-
-</div> <!-- /container -->
-        <p>Servers is {{ sdataname }}</p>
-        <p>The os is {{ osname }}</p>
     {% endblock %}

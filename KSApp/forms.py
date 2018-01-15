@@ -19,7 +19,7 @@ class RegisterForm(FlaskForm):
 
 
 class AddServerForm(FlaskForm):
-    servername = StringField('Server Name', validators=[InputRequired(), Length(min=8, max=80)])
+    servername = StringField('Server Name', validators=[InputRequired(), Length(min=2, max=80)])
     ipaddress = StringField('IP Address', validators=[InputRequired(), Length(min=4, max=80)])
     primaryrole = StringField('Primary Role', validators=[InputRequired(), Length(min=1, max=200)])
     secondaryrole = StringField('Secondary Role', validators=[Length(min=1, max=200),Optional()])
