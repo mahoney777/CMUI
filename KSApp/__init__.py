@@ -12,7 +12,7 @@ app.config.from_object('config')
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mahoney:Yb1dAI3vna3xTAMuJNOV@localhost:3306/testdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://mahoney:Yb1dAI3vna3xTAMuJNOV@localhost:3306/kasldb'
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = 'hfoafoafodnpnad'
 bootstrap = Bootstrap(app)

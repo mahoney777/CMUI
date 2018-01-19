@@ -3,33 +3,31 @@
 
     {% block body %}
         <h>Dashboard</h>
-        {% for i in basicserverinfo %}
-    <h>{{ i[1] }}</h>
-        <table border = 1>
-            <dl class="dl-horizontal">
-            <dt>Server ID</dt>
-            <dd> {{ i[0] }}</dd>
-            <dt>Server Name</dt>
-            <dd> {{ i[1] }}</dd>
-            <dt>ip Address</dt>
-            <dd> {{ i[2] }}</dd>
-            <dt>Primary Role</dt>
-            <dd> {{ i[3] }}</dd>
-            <dt>Secondary Role</dt>
-            <dd> {{ i[4] }}</dd>
-            <dt>Commission</dt>
-            <dd> {{ i[5] }}</dd>
-            <dt>Make</dt>
-            <dd> {{ i[6] }}</dd>
-            <dt>Make</dt>
-            <dd> {{ i[15] }}</dd>
-            <dt>Make</dt>
-            <dd> {{ i[16] }}</dd>
-            <dt>Make</dt>
-            <dd> {{ i[17] }}</dd>
-            </dl>
+     {% for info in basicserverinfo %}
+    <div class="container">
+        <h>{{ info[0] }}</h>
+            <table border = 1>
+                <div class="dl-horizontal">
+                <dt>Server Name</dt>
+                <dd> {{ info.servername }}</dd>
+                <dt>Primary Role</dt>
+                <dd> {{ info['ServerName'] }}</dd>
+                <dt>Secondary Role</dt>
+                <dd> {{ info['CPU-Name'] }}</dd>
+                <dt>CPU</dt>
+                <dd> {{ info[3] }}</dd>
+                <dt>Operating System</dt>
+                <dd> {{ info[4] }}</dd>
+                <dt>Drives</dt>
+                <dd> {{ info[5] }}</dd>
+                </div>
+            </table>
+    <button class="btn btn-primary " type="Drive Info">Drive Info</button>
+    </div>
 
          {% endfor %}
-      </table>
+
+
+
 
     {% endblock %}

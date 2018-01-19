@@ -10,6 +10,7 @@ from sqlalchemy import text
 import wmi, os
 from wmiutil import Connector
 import threading
+from itertools import chain
 
 
 def reloadserverstats():
@@ -29,40 +30,47 @@ def homepage():
 
 @app.route("/servers", methods=['GET', 'POST'])
 def servers():
-    basicserverinfo = []
-    ids = []
-    info = []
-    drives = []
-    for row in db.engine.execute(text("SELECT * FROM SERVERS")):
-        basicserverinfo.append(row)
-        ids.append(row[0])
-    print(basicserverinfo)
-    for i in ids:
-        serverid = i
-        for row in db.engine.execute(text("SELECT * FROM serverinfo WHERE servers_id = :serverid"), serverid=serverid):
-            info.append(row)
-            print(row)
-        print(info)
-        print("""
+    drivelists = []
+    testlist = []
+    print("""
         
         
         
         
         
-        """)
-
-    for row in db.engine.execute(text("SELECT * FROM SERVERDRIVES WHERE servers_id = :serverid"), serverid=serverid):
-        drives.append(row)
-    print(drives)
-
-
-    #####################################
+    """)
+    ##########################################
     """I need to create a system where
     data from the database can be passed
-    as different servers-stuff in testfile"""
-    #####################################
+    as different servers- stuff in testfile"""
+    ##########################################
 
-    return render_template('servers.html', basicserverinfo=basicserverinfo)
+    test = db.engine.execute(text("""SELECT servers.servername, servers.primaryrole, servers.secondaryrole, 
+            serverinfo.cpuname, serverinfo.operatingsystem FROM servers LEFT JOIN serverinfo 
+            ON serverinfo.servers_id = servers.id GROUP BY servers.servername"""))
+
+    drives = db.engine.execute(text("""SELECT serverdrives.drivemapping, serverdrives.drivefreespace, 
+            serverdrives.drivetotalspace FROM serverdrives RIGHT JOIN servers ON servers_id = servers.id 
+            WHERE servers_id = servers.id;"""))
+
+
+    print(test)
+    for row in test:
+        testlist.append({'ServerName': row[0], 'Primary Role': row[1], 'Seconary Role': row[2], 'CPU-Name': row[3],
+                         'Operating System': row[4]})
+
+
+    for row in drives:
+        drivelists.append({'Drive Mapping': row[0], 'FreeSpace': row[1], 'TotalSpace': row[2]})
+
+
+    print("-----------------------------------------------------------------------")
+    print(testlist)
+    print()
+    print(drivelists)
+
+
+    return render_template('servers.html', basicserverinfo=testlist)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -127,7 +135,7 @@ def addserver():
         #
         vm, name, status, operatingsystem, notinuse, totalmem, \
         numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = server_info.allstats()
-        print(vm, name, status, numofcpu, numofcores, "How")
+        print(vm, name, status, numofcpu, numofcores)
 
         new_server = Servers(servername=form.servername.data, ipaddress=form.ipaddress.data,
                              primaryrole=form.primaryrole.data, secondaryrole=form.secondaryrole.data,
@@ -152,7 +160,7 @@ def addserver():
         drivelistlen = len(drivelist)
 
         for i in range(drivelistlen):
-            mapping, freespace, totalspace = drivelist[i]
+            mapping, totalspace, freespace = drivelist[i]
             print(mapping, freespace, totalspace)
 
             new_serverdrives = serverdrives(servers_id = serverid, drivemapping=mapping, drivefreespace = freespace,
