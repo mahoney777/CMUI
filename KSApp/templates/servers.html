@@ -6,28 +6,46 @@
             <h1>Server Dashboard <small>Find info on servers</small></h1>
         </div>
      {% for info in basicserverinfo %}
-    <div class="container">
-        <div class="panel panel-default">
-        <h>{{ info['ServerName'] }}</h>
-            <table class="table table-bordered">
-                <div class="dl-horizontal">
-                <dt>Server Name</dt>
-                <dd> {{ info['ServerName'] }}</dd>
-                <dt>Primary Role</dt>
-                <dd> {{ info['Primary Role'] }}</dd>
-                <dt>Secondary Role</dt>
-                <dd> {{ info['Secondary Role'] }}</dd>
-                <dt>CPU</dt>
-                <dd> {{ info['CPU-Name'] }}</dd>
-                <dt>Operating System</dt>
-                <dd> {{ info['Operating System'] }}</dd>
+                <div class="container">
+                    <h>{{ info['ServerName'] }}</h>
+                        <table class="table table-bordered dl-horizontal">
+                            <dt>Server Name</dt>
+                            <dd> {{ info['ServerName'] }}</dd>
+                            <dt>Primary Role</dt>
+                            <dd> {{ info['Primary Role'] }}</dd>
+                            <dt>Secondary Role</dt>
+                            <dd> {{ info['Secondary Role'] }}</dd>
+                            <dt>CPU</dt>
+                            <dd> {{ info['CPU-Name'] }}</dd>
+                            <dt>Operating System</dt>
+                            <dd> {{ info['Operating System'] }}</dd>
+                        </table>
                 </div>
-            </table>
-            <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25"
-                               aria-valuemin="0" aria-valuemax="100">{{ info['Percentage Used'] }}%</div>
-        </div>
-    </div>
-         {% endfor %}
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Server Drives
+            </button>
+            <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+            Server Drives
+
+         {% for drives in serverdrives %}
+            {% if drives['Server ID'] == info['Server ID'] %}
+                <div class="container">
+                <table class="table table-bordered dl-horizontal">
+                    <dt>Drive Mapping</dt>
+                    <dd> {{ drives['Drive Mapping'] }} </dd>
+                    <dt>Free Space</dt>
+                    <dd> {{ drives['FreeSpace'] }} </dd>
+                    <dt>Bar</dt>
+                        <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25"
+                             aria-valuemin="0" aria-valuemax="100">{{ drives['Percentage Used'] }}%</div>
+                    </dd>
+                </table>
+                </div>
+                </div>
+                </div>
+
+            {% endif %}{% endfor %}{% endfor %}
 
 
 

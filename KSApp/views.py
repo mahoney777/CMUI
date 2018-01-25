@@ -68,8 +68,6 @@ def servers():
 
 
 
-
-
     print("-----------------------------------------------------------------------")
     print("-----------------------------------------------------------------------")
     print(testlist)
@@ -81,7 +79,7 @@ def servers():
     print("-----------------------------------------------------------------------")
 
 
-    return render_template('servers.html', basicserverinfo=testlist)
+    return render_template('servers.html', basicserverinfo=testlist, serverdrives = drivelists)
 
 
 @app.route('/login', methods=['GET', 'POST'])
