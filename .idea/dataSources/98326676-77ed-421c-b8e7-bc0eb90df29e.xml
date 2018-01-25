@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="kasldb@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.4">
+    <root id="1"/>
+    <schema id="2" parent="1" name="kasldb">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="information_schema"/>
+    <schema id="4" parent="1" name="mysql"/>
+    <schema id="5" parent="1" name="performance_schema"/>
+    <schema id="6" parent="1" name="sys"/>
+    <schema id="7" parent="1" name="testdb"/>
+    <table id="8" parent="2" name="serverdrives"/>
+    <table id="9" parent="2" name="serverinfo"/>
+    <table id="10" parent="2" name="servers"/>
+    <table id="11" parent="2" name="users"/>
+    <column id="12" parent="8" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="13" parent="8" name="servers_id">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="14" parent="8" name="drivemapping">
+      <Position>3</Position>
+      <DataType>varchar(200)|0</DataType>
+    </column>
+    <column id="15" parent="8" name="drivefreespace">
+      <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="16" parent="8" name="drivetotalspace">
+      <Position>5</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="17" parent="8" name="percentused">
+      <Position>6</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <index id="18" parent="8" name="servers_id">
+      <ColNames>servers_id</ColNames>
+    </index>
+    <key id="19" parent="8" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="20" parent="8" name="serverdrives_ibfk_1">
+      <ColNames>servers_id</ColNames>
+      <RefSchemaName>kasldb</RefSchemaName>
+      <RefTableName>servers</RefTableName>
+      <RefColNames>id</RefColNames>
+    </foreign-key>
+    <column id="21" parent="9" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="22" parent="9" name="servers_id">
+      <Position>2</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="23" parent="9" name="operatingsystem">
+      <Position>3</Position>
+      <DataType>varchar(200)|0</DataType>
+    </column>
+    <column id="24" parent="9" name="cpuload">
+      <Position>4</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="25" parent="9" name="totalram">
+      <Position>5</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="26" parent="9" name="ramnotinuse">
+      <Position>6</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="27" parent="9" name="cpuname">
+      <Position>7</Position>
+      <DataType>varchar(200)|0</DataType>
+    </column>
+    <column id="28" parent="9" name="numofcores">
+      <Position>8</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <column id="29" parent="9" name="numofcpu">
+      <Position>9</Position>
+      <DataType>int(11)|0</DataType>
+    </column>
+    <index id="30" parent="9" name="servers_id">
+      <ColNames>servers_id</ColNames>
+    </index>
+    <key id="31" parent="9" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="32" parent="9" name="serverinfo_ibfk_1">
+      <ColNames>servers_id</ColNames>
+      <RefSchemaName>kasldb</RefSchemaName>
+      <RefTableName>servers</RefTableName>
+      <RefColNames>id</RefColNames>
+    </foreign-key>
+    <column id="33" parent="10" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="34" parent="10" name="servername">
+      <Position>2</Position>
+      <DataType>varchar(200)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="35" parent="10" name="ipaddress">
+      <Position>3</Position>
+      <DataType>varchar(80)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="36" parent="10" name="primaryrole">
+      <Position>4</Position>
+      <DataType>varchar(200)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="37" parent="10" name="secondaryrole">
+      <Position>5</Position>
+      <DataType>varchar(200)|0</DataType>
+    </column>
+    <column id="38" parent="10" name="commission">
+      <Position>6</Position>
+      <DataType>date|0</DataType>
+    </column>
+    <column id="39" parent="10" name="make">
+      <Position>7</Position>
+      <DataType>varchar(100)|0</DataType>
+    </column>
+    <index id="40" parent="10" name="servername">
+      <ColNames>servername</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="41" parent="10" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="42" parent="10" name="servername">
+      <ColNames>servername</ColNames>
+      <UnderlyingIndexName>servername</UnderlyingIndexName>
+    </key>
+    <column id="43" parent="11" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="44" parent="11" name="username">
+      <Position>2</Position>
+      <DataType>varchar(80)|0</DataType>
+    </column>
+    <column id="45" parent="11" name="password">
+      <Position>3</Position>
+      <DataType>varchar(200)|0</DataType>
+    </column>
+    <column id="46" parent="11" name="email">
+      <Position>4</Position>
+      <DataType>varchar(256)|0</DataType>
+    </column>
+    <column id="47" parent="11" name="urole">
+      <Position>5</Position>
+      <DataType>varchar(80)|0</DataType>
+    </column>
+    <index id="48" parent="11" name="email">
+      <ColNames>email</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="49" parent="11" name="username">
+      <ColNames>username</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="50" parent="11" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="51" parent="11" name="username">
+      <ColNames>username</ColNames>
+      <UnderlyingIndexName>username</UnderlyingIndexName>
+    </key>
+    <key id="52" parent="11" name="email">
+      <ColNames>email</ColNames>
+      <UnderlyingIndexName>email</UnderlyingIndexName>
+    </key>
+  </database-model>
+</dataSource>

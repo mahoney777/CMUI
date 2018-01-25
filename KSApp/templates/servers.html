@@ -2,29 +2,31 @@
     {% import "bootstrap/wtf.html" as wtf %}
 
     {% block body %}
-        <h>Dashboard</h>
+        <div class="page-header">
+            <h1>Server Dashboard <small>Find info on servers</small></h1>
+        </div>
      {% for info in basicserverinfo %}
     <div class="container">
-        <h>{{ info[0] }}</h>
-            <table border = 1>
+        <div class="panel panel-default">
+        <h>{{ info['ServerName'] }}</h>
+            <table class="table table-bordered">
                 <div class="dl-horizontal">
                 <dt>Server Name</dt>
-                <dd> {{ info.servername }}</dd>
-                <dt>Primary Role</dt>
                 <dd> {{ info['ServerName'] }}</dd>
+                <dt>Primary Role</dt>
+                <dd> {{ info['Primary Role'] }}</dd>
                 <dt>Secondary Role</dt>
-                <dd> {{ info['CPU-Name'] }}</dd>
+                <dd> {{ info['Secondary Role'] }}</dd>
                 <dt>CPU</dt>
-                <dd> {{ info[3] }}</dd>
+                <dd> {{ info['CPU-Name'] }}</dd>
                 <dt>Operating System</dt>
-                <dd> {{ info[4] }}</dd>
-                <dt>Drives</dt>
-                <dd> {{ info[5] }}</dd>
+                <dd> {{ info['Operating System'] }}</dd>
                 </div>
             </table>
-    <button class="btn btn-primary " type="Drive Info">Drive Info</button>
+            <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25"
+                               aria-valuemin="0" aria-valuemax="100">{{ info['Percentage Used'] }}%</div>
+        </div>
     </div>
-
          {% endfor %}
 
 

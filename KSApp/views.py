@@ -32,6 +32,8 @@ def homepage():
 def servers():
     drivelists = []
     testlist = []
+    wowlist = []
+    ids=[]
     print("""
         
         
@@ -45,29 +47,38 @@ def servers():
     as different servers- stuff in testfile"""
     ##########################################
 
-    test = db.engine.execute(text("""SELECT servers.servername, servers.primaryrole, servers.secondaryrole, 
+    test = db.engine.execute(text("""SELECT servers.id, servers.servername, servers.primaryrole, servers.secondaryrole, 
             serverinfo.cpuname, serverinfo.operatingsystem FROM servers LEFT JOIN serverinfo 
-            ON serverinfo.servers_id = servers.id GROUP BY servers.servername"""))
+            ON serverinfo.servers_id = servers.id GROUP BY servers.id"""))
 
-    drives = db.engine.execute(text("""SELECT serverdrives.drivemapping, serverdrives.drivefreespace, 
-            serverdrives.drivetotalspace FROM serverdrives RIGHT JOIN servers ON servers_id = servers.id 
-            WHERE servers_id = servers.id;"""))
+    drives = db.engine.execute(text("""SELECT serverdrives.servers_id, serverdrives.drivemapping, serverdrives.drivefreespace, 
+            serverdrives.drivetotalspace, serverdrives.percentused FROM serverdrives"""))
 
 
-    print(test)
     for row in test:
-        testlist.append({'ServerName': row[0], 'Primary Role': row[1], 'Seconary Role': row[2], 'CPU-Name': row[3],
-                         'Operating System': row[4]})
-
+        testlist.append({'Server ID': row[0], 'ServerName': row[1], 'Primary Role': row[2], 'Secondary Role': row[3],
+                         'CPU-Name': row[4], 'Operating System': row[5]})
 
     for row in drives:
-        drivelists.append({'Drive Mapping': row[0], 'FreeSpace': row[1], 'TotalSpace': row[2]})
+        drivelists.append({'Server ID': row[0], 'Drive Mapping': row[1], 'FreeSpace': row[2], 'TotalSpace': row[3],
+                           'Percentage Used': row[4]})
+
+
+
+
+
+
 
 
     print("-----------------------------------------------------------------------")
+    print("-----------------------------------------------------------------------")
     print(testlist)
-    print()
+    print("-----------------------------------------------------------------------")
     print(drivelists)
+    print("-----------------------------------------------------------------------")
+    print(wowlist)
+    print("-----------------------------------------------------------------------")
+    print("-----------------------------------------------------------------------")
 
 
     return render_template('servers.html', basicserverinfo=testlist)
@@ -160,11 +171,11 @@ def addserver():
         drivelistlen = len(drivelist)
 
         for i in range(drivelistlen):
-            mapping, totalspace, freespace = drivelist[i]
+            mapping, totalspace, freespace, percentageused = drivelist[i]
             print(mapping, freespace, totalspace)
 
             new_serverdrives = serverdrives(servers_id = serverid, drivemapping=mapping, drivefreespace = freespace,
-                                           drivetotalspace = totalspace)
+                                           drivetotalspace = totalspace, percentused=percentageused)
 
             db.session.add(new_serverdrives)
             db.session.commit()

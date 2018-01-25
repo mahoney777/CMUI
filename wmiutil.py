@@ -1,7 +1,15 @@
 import sys, wmi, os
-from socket import *
+import socket
 import pythoncom
 import threading
+
+def grabip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    trueip = (s.getsockname()[0])
+    s.close()
+    return trueip
+
 
 class Connector():
     """WMI Connector to server"""
@@ -11,10 +19,13 @@ class Connector():
         self.password = password
 
         pythoncom.CoInitialize()
-        #Use ip,username,password to connect to server
         global c
-        #c = wmi.WMI()
-        c = wmi.WMI(ip, user=username, password=password)
+        #Use ip,username,password to connect to server
+        local_ip = grabip()
+        if ip == local_ip:
+            c = wmi.WMI()
+        else:
+            c = wmi.WMI(ip, user=username, password=password)
 
     def connect(self):
         try:
@@ -110,7 +121,10 @@ class Connector():
                 drivename = drive.caption
                 totalspace = round((int(drive.Size) / 2 ** 30), 2)
                 freespace = round((int(drive.FreeSpace) / 2 ** 30), 2)
-                singledrive = drivename, totalspace, freespace
+                usedspace = totalspace - freespace
+                percentused = round((usedspace / totalspace * 100), 2)
+                singledrive = drivename, totalspace, freespace, percentused
+                print(singledrive)
                 drivelist.append(singledrive)
 
             except TypeError:

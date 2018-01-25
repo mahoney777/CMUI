@@ -99,14 +99,16 @@ class serverdrives(db.Model):
     drivemapping = db.Column(db.String(200), nullable=True)
     drivefreespace = db.Column(db.Integer, nullable=True)
     drivetotalspace = db.Column(db.Integer, nullable=True)
+    percentused = db.Column(db.Integer, nullable=True)
 
 
-    def __int__(self, servers_id, drivemapping, drivefreespace, drivetotalspace):
+    def __int__(self, servers_id, drivemapping, drivefreespace, drivetotalspace, percentused):
 
         self.servers_id = servers_id
         self.drivemapping = drivemapping
         self.drivefreespace = drivefreespace
         self.drivetotalspace = drivetotalspace
+        self.percentused = percentused
 
 
 

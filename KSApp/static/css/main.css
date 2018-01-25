@@ -50,3 +50,16 @@
     -webkit-transform: scaleY(1.0);
   }
 }
+
+
+
+
+.progress-bar {padding: 10em;
+  margin-bottom: 10px}
+
+
+.table {padding: 10em;
+  margin: 10px}
+
+.panel {padding: 10em;
+  margin: 10px}
