@@ -11,19 +11,62 @@ import wmi, os
 from wmiutil import Connector
 import threading
 from itertools import chain
+import time
+import schedule
 
 
 def reloadserverstats():
-    #reload the stats
-    pass
+    serverIP = []
+    x = os.environ.get("DOMAIN_USERNAME")
+    y = os.environ.get("DOMAIN_PWD")
+    print(x, y)
 
+    servers = db.engine.execute(text("""SELECT ipaddress FROM servers"""))
+
+    #runtime needs to be added
+    for ip in servers:
+        serverIP.append(ip)
+        reloader = Connector(ip, x, y)
+        vm, name, status, operatingsystem, notinuse, totalmem, \
+        numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = reloader.allstats()
+        drivelistlen = len(drivelist)
+        for i in range(drivelistlen):
+            mapping, totalspace, freespace, percentageused = drivelist[i]
+
+        db.engine.execute(text("""UPDATE serverinfo SET serverinfo.operatingsystem = :OS, serverinfo.ramnotinuse = 
+        :notinuse, serverinfo.totalram = :totalmem, serverinfo.numofcores = :cores, serverinfo.numofcpu = :cpu,
+        serverinfo.cpuname = :cpuname, serverinfo.cpuload = :cpuload WHERE servers_id IN 
+        (SELECT servers.id FROM servers WHERE ipaddress = :ip);"""))
+        db.engine.execute(text("""UPDATE serverdrives SET serverdrives.drivemapping = :map, serverdrives.drivetotalspace,
+        serverdrives.drivefreespace WHERE servers_id IN (SELECT servers.id FROM servers WHERE ipaddress = :ip); """))
+
+
+def emailer():
+
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403
+
+@app.errorhandler(410)
+def page_not_found(e):
+    return render_template('410.html'), 410
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
 
 @app.route('/')
-@app.route('/index')
+@app.route('/welcome')
 def homepage():
     return render_template('index.html')#need to fix with wmi support
 
@@ -32,8 +75,6 @@ def homepage():
 def servers():
     drivelists = []
     testlist = []
-    wowlist = []
-    ids=[]
     print("""
         
         
@@ -74,8 +115,6 @@ def servers():
     print("-----------------------------------------------------------------------")
     print(drivelists)
     print("-----------------------------------------------------------------------")
-    print(wowlist)
-    print("-----------------------------------------------------------------------")
     print("-----------------------------------------------------------------------")
 
 
@@ -98,6 +137,7 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
     form = RegisterForm()
 
@@ -107,8 +147,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return '<h1>New user has been created!</h1>'
-        #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
+        return redirect(url_for('login.html'))
 
     return render_template('register.html', form=form)
 
@@ -194,25 +233,17 @@ def stats():
 
     if form.validate_on_submit():
         ip = form.ipaddress.data
-        ipsearch = Connector(ip,x,y)
-        operatingsystem = ipsearch.connect()
-        diskspace = ipsearch.diskspace()
-        map = diskspace[0]
-        free = diskspace[1]
-        total = diskspace[2]
-        uptime = ipsearch.get_uptime()
-        cpuload = ipsearch.get_cpu()
-        memory = ipsearch.totaltestmem()
-        memorynotinuse = ipsearch.notinusemem()
-        system = ipsearch.sysinfo()
-        vm = system[0]
-        name = system[1]
-        status = system[2]
+        connection = Connector(ip,x,y)
+        vm, name, status, operatingsystem, notinuse, totalmem, \
+        numofcores, numofcpu, cpuname, avgcpuload, uptime, drivelist = connection.allstats()
+        drivelistlen = len(drivelist)
+        for i in range(drivelistlen):
+            mapping, totalspace, freespace, percentageused = drivelist[i]
 
-        return render_template('stats.html', form=form, os=operatingsystem, map = map,
-                               free=free, total=total, uptime=uptime, cpu=cpuload,
-                               mem=memory, notinuse=memorynotinuse, vm=vm, name=name,
-                               status= status)
+            return render_template('stats.html', form=form, os=operatingsystem, map = mapping,
+                                   free=freespace, total=totalspace, uptime=uptime, cpu=avgcpuload,
+                                   mem=totalmem, notinuse=notinuse, vm=vm, name=name,
+                                   status=status)
 
     return render_template('stats.html', form = form)
 
@@ -238,3 +269,4 @@ def domainaccount():
 
 if __name__ == '__main__':
     KSApp.run(debug=True, use_reloader=True)
+    #####schedule.every(10).minutes.do(reloadserverstats())

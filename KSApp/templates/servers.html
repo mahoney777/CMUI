@@ -7,7 +7,7 @@
         </div>
      {% for info in basicserverinfo %}
                 <div class="container">
-                    <h>{{ info['ServerName'] }}</h>
+                    <h2>{{ info['ServerName'] }}</h2>
                         <table class="table table-bordered dl-horizontal">
                             <dt>Server Name</dt>
                             <dd> {{ info['ServerName'] }}</dd>
@@ -21,13 +21,6 @@
                             <dd> {{ info['Operating System'] }}</dd>
                         </table>
                 </div>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                Server Drives
-            </button>
-            <div class="collapse" id="collapseExample">
-            <div class="card card-body">
-            Server Drives
-
          {% for drives in serverdrives %}
             {% if drives['Server ID'] == info['Server ID'] %}
                 <div class="container">
@@ -37,12 +30,14 @@
                     <dt>Free Space</dt>
                     <dd> {{ drives['FreeSpace'] }} </dd>
                     <dt>Bar</dt>
-                        <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25"
-                             aria-valuemin="0" aria-valuemax="100">{{ drives['Percentage Used'] }}%</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                 aria-valuemin="0" aria-valuemax="100" style="width:{{ drives['Percentage Used'] }}%">
+                                {{ drives['Percentage Used'] }}%
+                            </div>
+                        </div>
                     </dd>
                 </table>
-                </div>
-                </div>
                 </div>
 
             {% endif %}{% endfor %}{% endfor %}

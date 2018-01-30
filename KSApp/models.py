@@ -68,14 +68,15 @@ class serverinfo(db.Model):
     cpuload = db.Column(db.Integer, nullable=True)
     totalram = db.Column(db.Integer, nullable=True)
     ramnotinuse = db.Column(db.Integer, nullable=True)
-    status = db.Column
+    status = db.Column(db.String(100))
     cpuname = db.Column(db.String(200))
     numofcores = db.Column(db.Integer)
     numofcpu = db.Column(db.Integer)
+    uptime = db.Column(db.Time)
 
 
     def __init__(self, servers_id, operatingsystem, cpuload, ramnotinuse,
-                 totalram, status, cpuname, numofcores, numofcpu):
+                 totalram, status, cpuname, numofcores, numofcpu, uptime):
 
         self.servers_id = servers_id
         self.operatingsystem = operatingsystem
@@ -86,6 +87,7 @@ class serverinfo(db.Model):
         self.cpuname = cpuname
         self.numofcores = numofcores
         self.numofcpu = numofcpu
+        self.uptime = uptime
 
     def get_id(self):
         return self.id
