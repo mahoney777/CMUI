@@ -3,14 +3,12 @@ import win32con
 import win32api
 import pywintypes
 import re
-import wmi
 
 def get_software_updates(update_seeker, installed):
-    c = wmi.WMI()
     # Search installed/not installed Software Windows Updates
     search_string = "IsInstalled=%d and Type='Software'" % installed
     search_update = update_seeker.Search(search_string)
-    _ = c.client.Dispatch("Microsoft.Update.UpdateColl")
+    _ = win32com.client.Dispatch("Microsoft.Update.UpdateColl")
     updates = []
     categories = []
     update_dict = {}
@@ -38,21 +36,12 @@ def get_software_updates(update_seeker, installed):
     return update_dict
 
 def enum_winupdates():
-    """
-    ip = "192.168.31.2"
-    username = "CMUIAdmin"
-    password = "Admin2017"
-    c = wmi.WMI(ip, user=username, password=password)
-    """
-    c = wmi.WMI()
-    for os in c.Win32_OperatingSystem():
-        print(os.Caption)
-    wua = c.client.Dispatch("Microsoft.Update.Session")
+    wua = win32com.client.Dispatch("Microsoft.Update.Session")
     update_seeker = wua.CreateUpdateSearcher()
+    print("\n[+] Enumerating installed Windows or Drivers' Updates...(if any)\n")
+    installed = get_software_updates(update_seeker, installed=True)
     print("\n[+] Enumerating available Windows or Drivers' Updates not installed...(if any)\n")
     available = get_software_updates(update_seeker, installed=False)
-    return available
+    return installed, available
 
 enum_winupdates()
-
-

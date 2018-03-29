@@ -24,10 +24,15 @@ login_manager.login_message = 'Please Login'
 
 
 
+
 from KSApp.models import Users, Servers, serverinfo
 
 db.create_all()
 
 db.session.commit()
 
+
 from KSApp import views
+
+
+

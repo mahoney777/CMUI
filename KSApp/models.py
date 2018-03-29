@@ -72,7 +72,7 @@ class serverinfo(db.Model):
     cpuname = db.Column(db.String(200))
     numofcores = db.Column(db.Integer)
     numofcpu = db.Column(db.Integer)
-    uptime = db.Column(db.Time)
+    uptime = db.Column(db.Integer)
 
 
     def __init__(self, servers_id, operatingsystem, cpuload, ramnotinuse,

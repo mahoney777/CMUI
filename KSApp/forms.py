@@ -24,7 +24,7 @@ class AddServerForm(FlaskForm):
     primaryrole = StringField('Primary Role', validators=[InputRequired(), Length(min=1, max=200)])
     secondaryrole = StringField('Secondary Role', validators=[Length(min=1, max=200),Optional()])
     commission = DateField("Commission Date", format='%d/%m/%Y', validators=[Optional()])
-    make = StringField('Make (HP)', validators=[InputRequired(), Length(min=1, max=100)])
+    make = StringField('Manufacturer (HP)', validators=[InputRequired(), Length(min=1, max=100)])
 
 
 
@@ -40,3 +40,6 @@ class add_domain_account(FlaskForm):
                                                      EqualTo('confirm', message='Passwords do not match')])
     confirm = PasswordField('Confirm Password')
 
+class emailform(FlaskForm):
+    name = StringField('Name', validators=[InputRequired(), Length(min=3, max=80)])
+    emailAddress = StringField('Email Address', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50), ])

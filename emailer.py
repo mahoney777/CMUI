@@ -1,25 +1,39 @@
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from string import Template
 
 
-class emailer():
-    """Emailer to send notifications"""
+def emailer():
+    fromaddr = "cmuiemailer@gmail.com"
+    toaddr = "info@cmui.co.uk"
+    msg = MIMEMultipart()
+    msg['From'] = fromaddr
+    msg['To'] = toaddr
+    msg['Subject'] = "Test mail"
 
-    def __init__(self, receiver, sender, subject, body):
-        self.receiver = receiver
-        self.sender = sender
-        self.subject = subject
-        self.body = body
+    body = "CMUI test"
+    msg.attach(MIMEText(body, 'plain'))
 
-    def emailsender(self, receiver, sender, subject, body, exchangeserver):
-        msg['From'] = sender
-        msg['To'] = receiver
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
-        text = msg.as_string()
-        # print text
-        # Send the message via our SMTP server
-        s = smtplib.SMTP('our.exchangeserver.com')
-        s.sendmail(sender, receiver, text)
-        s.quit()
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(fromaddr, "Zebra100")
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    server.quit()
+
+
+
+
+def get_contacts(filename):
+    names = []
+    emails = []
+    with open(filename, mode='r', encoding='utf-8') as contacts_file:
+        for a_contact in contacts_file:
+            names.append(a_contact.split()[0])
+            emails.append(a_contact.split()[1])
+    print(names, emails)
+    return names, emails
+
+
+get_contacts('contacts.txt')

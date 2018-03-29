@@ -115,7 +115,6 @@ class Connector():
         uptime = round(((int([uptime.SystemUpTime for uptime in
                               c.Win32_PerfFormattedData_PerfOS_System()][0])) / 3600 / 24), 2)
 
-
         for drive in c.Win32_LogicalDisk():
             try:
                 drivename = drive.caption
@@ -124,17 +123,11 @@ class Connector():
                 usedspace = totalspace - freespace
                 percentused = round((usedspace / totalspace * 100), 2)
                 singledrive = drivename, totalspace, freespace, percentused
-                print(singledrive)
                 drivelist.append(singledrive)
-
             except TypeError:
                 pass
 
         return vm, name, status, os, notinuse, totalmem, numofcores, numofcpu, cpu_name, avgcpuload, uptime, drivelist
-
-
-
-
 
 
 
@@ -149,14 +142,9 @@ def servertest():
     p.notinusemem()
     p.sysinfo()
     p.get_cpu()"""
-    p.allstats()
 
 
 
 def runtime():
-    c = wmi.WMI()
     uptime = round(((int([uptime.SystemUpTime for uptime in
                           c.Win32_PerfFormattedData_PerfOS_System()][0])) / 3600 / 24), 2)
-    print(uptime)
-
-runtime()
