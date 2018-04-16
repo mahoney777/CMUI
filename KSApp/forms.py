@@ -43,3 +43,6 @@ class add_domain_account(FlaskForm):
 class emailform(FlaskForm):
     name = StringField('Name', validators=[InputRequired(), Length(min=3, max=80)])
     emailAddress = StringField('Email Address', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50), ])
+
+class emailremoveform(FlaskForm):
+    emailAddress = StringField('Email Address', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50), ])

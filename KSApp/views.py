@@ -2,7 +2,7 @@ from KSApp import app, login_manager, db
 from flask import render_template, flash, redirect, session, url_for, request, logging, sessions
 from flask_bootstrap import Bootstrap
 from functools import wraps
-from KSApp.forms import RegisterForm, LoginForm, AddServerForm, ReusableForm, IPAddressform, add_domain_account, emailform
+from KSApp.forms import RegisterForm, LoginForm, AddServerForm, ReusableForm, IPAddressform, add_domain_account, emailform, emailremoveform
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from KSApp.models import Users, Servers, serverinfo, serverdrives
@@ -19,6 +19,7 @@ import schedule
 
 @app.before_first_request
 def createAdminAccount():
+    acc =
     try:
         print("Checking for Admin account...")
         pw = ''.join(random.sample((string.ascii_uppercase + string.digits), 9))
@@ -89,7 +90,8 @@ def load_user(user_id):
     try:
         return Users.query.get(int(user_id))
     except exc.InvalidRequestError:
-        pass
+        print("Error...")
+
 
 
 
@@ -222,21 +224,39 @@ def emailer():
 
     contactlist = []
 
-    form = emailform()
-    name = form.name.data
-    emailaddress = form.emailAddress.data
+    emailaddform = emailform()
+    emailremoverform = emailremoveform()
 
-    f = open("contacts.txt", "r")
-    for line in f:
-        contactlist.append(line)
-    print(contactlist)
+    if request.method == 'GET':
+        f = open("contacts.txt", "r")
+        for line in f:
+            contactlist.append(line)
+        print(contactlist)
 
-    if form.validate_on_submit():
+    if request.method == 'POST' and emailaddform.validate_on_submit():
+        name = emailaddform.name.data
+        emailaddress = emailaddform.emailAddress.data
         f = open('contacts.txt', 'a')
-        f.write(name +' - '+ emailaddress +'\n')
+        f.write(name +' - '+ emailaddress +' \n')
         f.close()
-        return render_template('emailer.html', form = form)
-    return render_template('emailer.html', form=form)
+        return redirect(url_for('emailer'))
+
+    if request.method == 'POST' and emailremoverform.validate_on_submit():
+        removeaddress = emailremoverform.emailAddress.data
+        print(removeaddress)
+        f = open('contacts.txt', 'r')
+        lines = f.readlines()
+        f.close()
+        f = open('contacts.txt', 'w')
+        for line in lines:
+            if removeaddress not in line:
+                f.write(line)
+        f.close()
+        return redirect(url_for('emailer'))
+
+
+
+    return render_template('emailer.html', addform=emailaddform, removeform=emailremoverform, contactlist=contactlist)
 #########################################################
 
 

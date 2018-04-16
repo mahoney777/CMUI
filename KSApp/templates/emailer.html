@@ -1,38 +1,39 @@
 {% extends 'layout.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block body %}
-     <div class="container">
 
+
+
+
+     <div class="container">
+     <h3>Current Users who receive emails: </h3>
+     {% for i in contactlist %}
+         <p>{{ i }}</p>
+     {% endfor %}
+     </div>
+
+
+     <div class="container">
       <form class="form-signin" method="POST" action="/emailer">
         <h2 class="form-signin-heading">Add Email Address to receive notifications</h2>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.name) }}
-        {{ wtf.form_field(form.emailAddress) }}
+        {{ addform.hidden_tag() }}
+        {{ wtf.form_field(addform.name) }}
+        {{ wtf.form_field(addform.emailAddress) }}
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">Add Email Address</button>
       </form>
+     </div>
 
-         <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Sam</td>
-              <td>Ethan</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>cmui@cmui.co.uk</td>
-              <td>mahoney@cmui.co.uk</td>
-            </tr>
-          </tbody>
-        </table>
+
+         <div class="container">
+            <form class="form-signin" method="POST" action="/emailer">
+            <h2 class="form-signin-heading">Remove Email Address from contacts</h2>
+            {{ removeform.hidden_tag() }}
+            {{ wtf.form_field(removeform.emailAddress) }}
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Remove This Email Address</button>
+            </form>
+         </div>
 
 
 {% endblock %}
