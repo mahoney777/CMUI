@@ -13,13 +13,13 @@ import threading
 from itertools import chain
 import time, string, random
 import schedule
+from VernamCipher import vc
 
 
-
+encryption_key = "fwkbfkwbifwbbw828"
 
 @app.before_first_request
 def createAdminAccount():
-    acc =
     try:
         print("Checking for Admin account...")
         pw = ''.join(random.sample((string.ascii_uppercase + string.digits), 9))
@@ -46,6 +46,8 @@ def reloadserverstats():
     serverIP = []
     x = os.environ.get("DOMAIN_USERNAME")
     y = os.environ.get("DOMAIN_PWD")
+    v = vc(y, encryption_key)
+    y = v.VernamCipher(y, encryption_key)
     print(x, y)
 
     servers = db.engine.execute(text("""SELECT ipaddress FROM servers"""))
@@ -176,6 +178,8 @@ def addserver():
     if form.validate_on_submit():
         x = os.environ.get("DOMAIN_USERNAME")
         y = os.environ.get("DOMAIN_PWD")
+        v = vc(y, encryption_key)
+        y = v.VernamCipher(y, encryption_key)
         z = form.ipaddress.data
         server_info = Connector(z, x, y)
         vm, name, status, operatingsystem, notinuse, totalmem, \
@@ -267,7 +271,10 @@ def stats():
     form = IPAddressform()
     x = os.environ.get("DOMAIN_USERNAME")
     y = os.environ.get("DOMAIN_PWD")
+    print(y)
 
+    v = vc(y, encryption_key)
+    y = v.VernamCipher(y ,encryption_key)
     if form.validate_on_submit():
         ip = form.ipaddress.data
         connection = Connector(ip,x,y)
@@ -292,9 +299,10 @@ def domainaccount():
     form = add_domain_account()
 
     if form.validate_on_submit():
+        v = vc(form.password.data, encryption_key)
+        y = v.VernamCipher(form.password.data, encryption_key)
         os.environ["DOMAIN_USERNAME"] = form.username.data
-        #could make hashing/encryting/decryt this
-        os.environ["DOMAIN_PWD"] = form.password.data
+        os.environ["DOMAIN_PWD"] = y
         #export password to env variable
         print(os.environ.get('DOMAIN_USERNAME'))
         print(os.environ.get('DOMAIN_PWD'))

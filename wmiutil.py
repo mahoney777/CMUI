@@ -131,20 +131,11 @@ class Connector():
 
 
 
-def servertest():
-    p = Connector("192.168.31.86", "CMUIAdmin", "Admin2017")
-    """
-    p.connect()
-    p.diskspace()
-    p.get_uptime()
-    p.get_cpu()
-    p.totaltestmem()
-    p.notinusemem()
-    p.sysinfo()
-    p.get_cpu()"""
-
-
-
 def runtime():
     uptime = round(((int([uptime.SystemUpTime for uptime in
                           c.Win32_PerfFormattedData_PerfOS_System()][0])) / 3600 / 24), 2)
+
+
+
+def servertest():
+    p = Connector("192.168.31.86", "CMUIAdmin", "Admin2017")
