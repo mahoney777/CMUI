@@ -137,8 +137,8 @@ def login():
                 login_user(user, remember=form.remember.data)
                 return redirect(url_for('admin'))
 
-
-        return '<h1>Invalid username or password</h1>'
+        flash('Wrong username or password')
+        return render_template('login.html', form=form)
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
